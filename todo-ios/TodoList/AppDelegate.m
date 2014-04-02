@@ -15,7 +15,7 @@
 {
     // Uncomment next 2 lines to connect to the Ankor Server
     //[[[ANKSystem alloc] initWith:@"root" connectParams:[[NSMutableDictionary alloc] init]
-          //url:@"ws://localhost:8080/websocket/ankor" useWebsocket:YES] start];
+          //url:@"wss://ankor-todo-sample.irian.at/websocket/ankor" useWebsocket:YES] start];
     
     return YES;
 }
