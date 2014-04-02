@@ -50,7 +50,7 @@
     NSDictionary* params = source.toDoItem;
     if (params != nil) {
         // Uncomment this line
-        //[ANKRefs fireAction:@"root.model" name:@"newTask" params:params];
+        [ANKRefs fireAction:@"root.model" name:@"newTask" params:params];
     }
 }
 
