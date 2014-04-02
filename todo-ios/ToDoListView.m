@@ -26,7 +26,7 @@
     // Uncomment Option 1 or 2
 
     // Option 1: Register observer using selector
-    //[ANKRefs observe:@"root.model.tasks" target:self listener:@selector(tasksChanged:)];
+    [ANKRefs observe:@"root.model.tasks" target:self listener:@selector(tasksChanged:)];
 
     // Option 2: Register observer using Block
     //[ANKRefs observe:@"root.model.tasks" listener:^(id value) {
