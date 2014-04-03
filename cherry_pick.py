@@ -53,6 +53,9 @@ def main():
 
   print "Cherry picking complete."
 
+  if sys.flags.debug:
+    print 'If you are comfortable with what the script is doing, remove the -d flag.'
+
 def cherry_pick(curr_branch, target_commit):
   ret_code = call(['git', 'checkout', curr_branch])
   if ret_code != 0:
