@@ -3,6 +3,7 @@ package io.ankor.tutorial;
 import at.irian.ankor.action.Action;
 import at.irian.ankor.annotation.ChangeListener;
 import at.irian.ankor.fx.binding.fxref.FxRef;
+import at.irian.ankor.fx.binding.fxref.FxRefs;
 import at.irian.ankor.fx.controller.FXControllerSupport;
 import at.irian.ankor.pattern.AnkorPatterns;
 import at.irian.ankor.ref.Ref;
@@ -54,14 +55,14 @@ public class TaskListController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        Ref rootRef = App.refFactory().ref("root");
+        Ref rootRef = FxRefs.refFactory().ref("root");
         FXControllerSupport.init(this, rootRef);
         rootRef.fire(new Action("init"));
     }
 
     @ChangeListener(pattern = "root")
     public void myInit() {
-        FxRef rootRef = App.refFactory().ref("root");
+        FxRef rootRef = FxRefs.refFactory().ref("root");
         modelRef = rootRef.appendPath("model");
         FxRef footerVisibilityRef = modelRef.appendPath("footerVisibility");
 
