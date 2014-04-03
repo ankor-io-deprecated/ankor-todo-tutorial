@@ -1,12 +1,18 @@
-import at.irian.ankor.ref.Ref;
-import at.irian.ankor.servlet.websocket.AnkorEndpoint;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+import at.irian.ankor.application.Application;
+import at.irian.ankor.system.WebSocketServerEndpoint;
+import org.apache.commons.lang.NotImplementedException;
 
 @SuppressWarnings("unused")
-public class TodoEndpoint extends AnkorEndpoint {
+public class TodoEndpoint extends WebSocketServerEndpoint {
+
     @Override
-    protected Object getModelRoot(Ref rootRef) {
+    protected Application createApplication() {
         // TODO
         throw new NotImplementedException();
+    }
+
+    @Override
+    protected String getPath() {
+        return "/websocket/ankor/{clientId}";
     }
 }
