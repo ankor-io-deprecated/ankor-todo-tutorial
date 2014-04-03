@@ -6,7 +6,7 @@ from subprocess import call as real_call
 def print_usage(): 
   print 'Cherry picks a commit to other branches.'
   print ''
-  print 'Example: python -d ' + sys.argv[0] + ' master fx 0 7 server 0 8 ios 0 4 --include-complete'
+  print 'Example: python -d ' + sys.argv[0] + ' master fx 0 8 server 0 9 ios 0 5 --include-complete'
   print ''
   print 'If you are comfortable with what the script is doing, remove the -d flag.'
 
@@ -43,7 +43,7 @@ def main():
     from_branch = int(branch_args[i + 1])
     to_branch = int(branch_args[i + 2])
 
-    for curr_branch_num in range(from_branch, to_branch + 1):
+    for curr_branch_num in range(from_branch, to_branch):
       curr_branch = branch_base + '-step-' + str(curr_branch_num)
       cherry_pick(curr_branch, target_commit)
 
