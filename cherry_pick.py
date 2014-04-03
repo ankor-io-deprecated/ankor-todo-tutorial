@@ -42,13 +42,15 @@ def main():
     from_branch = int(branch_args[i + 1])
     to_branch = int(branch_args[i + 2])
 
-    for curr_branch_num in range(from_branch, to_branch):
+    for curr_branch_num in range(from_branch, to_branch + 1):
       curr_branch = branch_base + '-step-' + str(curr_branch_num)
       cherry_pick(curr_branch, target_commit)
 
     if check_option(options, 'include_complete_branch'):
       curr_branch = branch_base + '-complete'
       cherry_pick(curr_branch, target_commit)
+
+  print "Cherry picking complete."
 
 def cherry_pick(curr_branch, target_commit):
   ret_code = call(['git', 'checkout', curr_branch])
