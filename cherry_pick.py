@@ -3,36 +3,16 @@
 import sys
 from subprocess import call as real_call
 
-def call(call_args):
-  if sys.flags.debug:
-    print 'Simulating: ' + ' '.join(call_args)
-    return 0
-  else:
-    return real_call(call_args)
+def print_usage(): 
+  print 'Cherry picks a commit to other branches.'
+  print ''
+  print 'Example: python -d ' + sys.argv[0] + ' --include-complete master fx 0 7 server 0 8'
+  print ''
+  print 'If you are comfortable with what the script would to, remove the -d flag.'
 
 option_types = {
   'include_complete_branch': ['-ic', '--include-complete']
 }
-
-def check_option(options, option_type):
-  flags = option_types[option_type]
-
-  for flag in flags:
-    if flag in options:
-      return True
-
-  return False
-
-def print_usage(): 
-  print 'Cherry picks a commit and copies it to a list of branches'
-  print 'Example: python ' + sys.argv[0] + ' --include-complete 268de3c fx 0 7 server 0 8'
-
-def extract_options(args):
-  options = []
-  for arg in args:
-    if arg.startswith('-'):
-      options.append(arg)
-  return options
 
 def main():
   args = sys.argv[1:]
@@ -80,6 +60,29 @@ def cherry_pick(curr_branch, target_commit):
   if ret_code != 0:
     print "Can't cherry-pick '" + target_commit + "' on top of '" + curr_branch + "'"
     exit(0)
+
+def call(call_args):
+  if sys.flags.debug:
+    print 'Simulating: ' + ' '.join(call_args)
+    return 0
+  else:
+    return real_call(call_args)
+
+def check_option(options, option_type):
+  flags = option_types[option_type]
+
+  for flag in flags:
+    if flag in options:
+      return True
+
+  return False
+
+def extract_options(args):
+  options = []
+  for arg in args:
+    if arg.startswith('-'):
+      options.append(arg)
+  return options
 
 if __name__ == "__main__":
     main()
