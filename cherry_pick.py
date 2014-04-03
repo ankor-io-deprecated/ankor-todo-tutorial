@@ -6,9 +6,9 @@ from subprocess import call as real_call
 def print_usage(): 
   print 'Cherry picks a commit to other branches.'
   print ''
-  print 'Example: python -d ' + sys.argv[0] + ' --include-complete master fx 0 7 server 0 8'
+  print 'Example: python -d ' + sys.argv[0] + ' master fx 0 7 server 0 8 --include-complete'
   print ''
-  print 'If you are comfortable with what the script would to, remove the -d flag.'
+  print 'If you are comfortable with what the script is doing, remove the -d flag.'
 
 option_types = {
   'include_complete_branch': ['-ic', '--include-complete']
@@ -23,7 +23,8 @@ def main():
 
   options = extract_options(args)
 
-  args_without_options = args[len(options):]
+  limit = len(args) - len(options)
+  args_without_options = args[:limit]
   target_commit = args_without_options[0]
   branch_args = args_without_options[1:]
 
