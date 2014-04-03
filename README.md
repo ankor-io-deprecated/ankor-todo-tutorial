@@ -28,9 +28,10 @@ Please make sure that all software components are installed properly.
             <pre>java -version</pre>
         </div>
         <div class="tab-pane" id="tab2">
-            <p>Maven 3.0.5 or higher, download from <a href="http://maven.apache.org/download.cgi">here</a>.</p>
+            <p>Maven 3.0.5, download from <a href="http://maven.apache.org/download.cgi">here</a>.</p>
             <p>Make sure that<p></p>
             <ul>
+                <li>your are actually using Maven 3.0.x because there is an <a href="https://java.net/jira/browse/GLASSFISH-20802">issue</a> with the Glassfish plugin when using Maven 3.1.x</li>
                 <li>MAVEN_HOME exists in your user variables (JDK installation directory)</li>
                 <li>and that %MAVEN_HOME%\bin is in your Path environment variable</li>
             </ul>
