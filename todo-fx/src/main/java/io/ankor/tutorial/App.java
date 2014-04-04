@@ -21,8 +21,8 @@ public class App extends Application {
                                   .withApplicationName("Todo FX Client")
                                   .withModelName("root")
                                   .withConnectParam("todoListId", "collaborationTest")
-//                                  .withServer("ws://localhost:8080/websocket/ankor")
-                                  .withServer("wss://ankor-todo-sample.irian.at/websocket/ankor")
+                                  .withServer("ws://localhost:8080/websocket/ankor")
+//                                  .withServer("wss://ankor-todo-sample.irian.at/websocket/ankor")
                                   .build();
     }
 
