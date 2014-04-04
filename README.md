@@ -14,9 +14,9 @@ After the process completes point your browser to [`http://localhost:8080/test.h
 The page should look something like this:
 
     :::text
-    Up and Running!
+    Server is up and running!
+    Connecting to ws://localhost:8080/websocket/ankor/6684908722527325 ...
     WebSocket connection established
-    UUID received: 9b1ac725-5bdd-46d2-9b9e-e5a283ae057b
 
 #### Connecting a client
 
