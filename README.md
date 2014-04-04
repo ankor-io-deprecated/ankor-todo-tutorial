@@ -97,5 +97,5 @@ It will also update the local variable, so that `(this.itemsLeft == itemsLeft)` 
 
 After you restart the server, you can add todos to the list and watch how the number gets updated.
 
-[1]: http://ankor.io/static/javadoc/apidocs/at/irian/ankor/action/Action.html
-[2]: http://ankor.io/static/javadoc/apidocs/at/irian/ankor/annotation/ActionListener.html
+[1]: http://ankor.io/static/javadoc/apidocs-0.2/at/irian/ankor/action/Action.html
+[2]: http://ankor.io/static/javadoc/apidocs-0.2/at/irian/ankor/annotation/ActionListener.html
