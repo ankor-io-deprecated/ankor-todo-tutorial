@@ -4,19 +4,39 @@
     <title>Up and Running!</title>
 </head>
 <body>
-<p>Up and Running!</p>
+<p>Server is up and running!</p>
 <script type="text/javascript">
-    var ws = new WebSocket("ws://localhost:8080/websocket/ankor")
-    ws.onopen = function (msg) {
+
+    var clientId = ('' + Math.random()).substr(2);
+    var url = "ws://localhost:8080/websocket/ankor/" + clientId;
+
+    var p = document.createElement('p');
+    p.textContent = 'Connecting to ' + url + ' ...';
+    document.body.appendChild(p);
+
+    var ws = new WebSocket(url)
+
+    ws.onopen = function (e) {
         var p = document.createElement('p');
         p.textContent = 'WebSocket connection established';
         document.body.appendChild(p);
     };
     ws.onmessage = function (e) {
         var p = document.createElement('p');
-        p.textContent = 'UUID received: ' + e.data;
+        p.textContent = 'Message received: ' + e.data;
         document.body.appendChild(p);
     };
+    ws.onerror = function (e) {
+        var p = document.createElement('p');
+        p.textContent = 'WebSocket Error: ' + e;
+        document.body.appendChild(p);
+    };
+    ws.onclose = function (e) {
+        var p = document.createElement('p');
+        p.textContent = 'WebSocket closed with code ' + e.code + ', Reason: ' + e.reason + ', wasClean: ' + e.wasClean;
+        document.body.appendChild(p);
+    };
+
 </script>
 </body>
 </html>
