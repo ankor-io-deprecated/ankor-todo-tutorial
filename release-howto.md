@@ -20,11 +20,16 @@
     >  <ankor.version>0.2.0</ankor.version>
     > ...
 
-5. Commit the change:
+5. Change version in javadoc links:
+
+    > java
+    > [2]: http://ankor.io/static/javadoc/apidocs-0.2/at/irian/ankor/ref/Ref.html
+
+6. Commit the change:
 
     > $ git commit
 
-6. Remember the commit hash:
+7. Remember the commit hash:
 
     > $ git log
     >
@@ -34,14 +39,14 @@
     >     Date:   Thu Apr 3 21:58:40 2014 +0200
     >         switched ankor.version in pom to 0.2.0
 
-7. Switch back to master
+8. Switch back to master
 
     > $ git checkout master
 
-8. Cherry-pick to other steps:
+9. Cherry-pick to other steps:
 
     > python cherry_pick.py a9c085737571e07f7f0be738c6791f309a91737c server 1 8 -ic
 
-9. Push to github:
+10. Push to github:
 
     > $ git push --all
