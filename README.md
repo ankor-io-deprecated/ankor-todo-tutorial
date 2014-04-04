@@ -14,7 +14,7 @@ Obviously this property would only "pollute" the domain object.
 It shouldn't be persisted in a database either.
 However, it fits quite naturally into the view model.
 
-View models don't need to extend domain object necessarily.
+View models don't need to extend domain objects necessarily.
 They also contain the overall state of the application, including its title, labels and so on.
 
 #### The Structure of an Ankor Server
