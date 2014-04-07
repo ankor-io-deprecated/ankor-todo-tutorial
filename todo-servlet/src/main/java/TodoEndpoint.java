@@ -1,11 +1,16 @@
-import at.irian.ankor.ref.Ref;
-import at.irian.ankor.servlet.websocket.AnkorEndpoint;
-import io.ankor.tutorial.model.TaskRepository;
-import io.ankor.tutorial.viewmodel.ModelRoot;
+import at.irian.ankor.application.Application;
+import at.irian.ankor.system.WebSocketServerEndpoint;
+import io.ankor.tutorial.TodoApplication;
 
-public class TodoEndpoint extends AnkorEndpoint {
+public class TodoEndpoint extends WebSocketServerEndpoint {
+
     @Override
-    protected Object getModelRoot(Ref rootRef) {
-        return new ModelRoot(rootRef, new TaskRepository());
+    protected Application createApplication() {
+        return new TodoApplication();
+    }
+
+    @Override
+    protected String getPath() {
+        return "/websocket/ankor/{clientId}";
     }
 }
