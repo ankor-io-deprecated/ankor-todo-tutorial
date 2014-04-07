@@ -1,16 +1,13 @@
 package io.ankor.tutorial.viewmodel;
 
-import at.irian.ankor.messaging.AnkorIgnore;
 import at.irian.ankor.pattern.AnkorPatterns;
 import at.irian.ankor.ref.Ref;
 import io.ankor.tutorial.model.TaskRepository;
 
 public class TaskListModel {
 
-    @AnkorIgnore
     private final Ref modelRef;
     
-    @AnkorIgnore
     private final TaskRepository taskRepository;
 
     private Boolean footerVisibility = false;
