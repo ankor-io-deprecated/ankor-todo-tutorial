@@ -4,7 +4,7 @@ import sys
 import git_helper
 
 def print_usage(): 
-  print 'Fast-forwards multiple branches.'
+  print 'Resets a range of branches to the origin version.'
   print ''
   print 'Example: python -d ' + sys.argv[0] + ' fx 0 8 server 0 9 ios 0 5 --include-complete'
   print ''
@@ -14,7 +14,7 @@ def check(branch_args, options):
   pass
 
 def fast_forward(curr_branch, options):
-  ret_code = git_helper.call(['git', 'pull', '--ff-only'])
+  ret_code = git_helper.call(['git', 'reset', '--hard', 'origin/'+curr_branch])
   if ret_code != 0:
       print "Can't fast forward '" + curr_branch + "'"
       exit(0)
