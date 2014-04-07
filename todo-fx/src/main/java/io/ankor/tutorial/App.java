@@ -1,39 +1,47 @@
 package io.ankor.tutorial;
 
-import at.irian.ankor.fx.websocket.AnkorApplication;
+import at.irian.ankor.system.AnkorClient;
+import at.irian.ankor.system.WebSocketFxClient;
+import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
-public class App  extends AnkorApplication {
+public class App extends Application {
+    private AnkorClient client;
 
-    // This is to start the JavaFX application.
     public static void main(String[] args) {
         launch(args);
     }
 
-    // This method gets called after a connection has been established
-    @Override
-    protected void startFXClient(Stage stage) throws Exception {
-        stage.setTitle("Ankor Todo Sample");
+    public App() throws Exception {
+        client = WebSocketFxClient.builder()
+                .withApplicationName("Todo FX Client")
+                .withModelName("root")
+                .withConnectParam("todoListId", "collaborationTest")
+                .withServer("ws://localhost:8080/websocket/ankor")
+                .build();
+    }
 
-        // predefined fxml
+    @Override
+    public void start(Stage stage) throws Exception {
+        client.start();
+
+        stage.setTitle("Ankor JavaFX Todo Sample");
         Pane myPane = FXMLLoader.load(getClass().getClassLoader().getResource("tasks.fxml"));
 
         Scene myScene = new Scene(myPane);
-
-        // predefined styles
         myScene.getStylesheets().add("style.css");
 
         stage.setScene(myScene);
         stage.show();
     }
 
-    // The WebSocket endpoint to connect to
     @Override
-    protected String getWebSocketUri() {
-        return "wss://ankor-todo-sample.irian.at/websocket/ankor";
+    public void stop() throws Exception {
+        client.stop();
+        super.stop();
     }
 }
 
