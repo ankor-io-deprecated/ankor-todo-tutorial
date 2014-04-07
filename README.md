@@ -97,7 +97,7 @@ For changing collections we can use a [`CollectionRef`][1] which is a subtype of
 It has methods for manipulating the underlying collection.
 Doing so will only send changes to the client.
 
-#### Implementing the the delete action
+#### Implementing the delete action
 
 Now that we know about `CollectionRef`s we can also implement the `deleteTask` method:
 
