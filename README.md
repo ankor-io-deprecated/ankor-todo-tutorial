@@ -21,12 +21,12 @@ The page should look something like this:
 #### Connecting a client
 
 If you went through one of the client tutorials you can use your own implementation.
-Just make sure they connect to `ws://localhost:8080/websockets/ankor` (see io.ankor.tutorial.App class constructor).
+Just make sure they connect to `ws://localhost:8080/websockets/ankor`.
 
 Otherwise you can use the JavaScript client provided by this servlet.
 Simply point your browser to `http://localhost:8080/`.
 As of now you will only see a blank page and the servlet will throw an `NotImplementedException`.
-Will will fix this in the next step.
+We will fix this in the next step.
 
 [1]: https://glassfish.java.net/
 [2]: http://www.websocket.org/
