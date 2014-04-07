@@ -77,6 +77,7 @@ But we still need to link our view models with the servlet.
 
 Until now Ankor does not know anything about our view model. So there is some glue code we must provide.
 We need to tell Ankor some things about our model. We do this by implementing the Ankor 'Application' interface.
+Let's open the already existing class 'TodoApplication' in the 'todo-server' module.
 
     :::java
     public class TodoApplication implements at.irian.ankor.application.Application {
