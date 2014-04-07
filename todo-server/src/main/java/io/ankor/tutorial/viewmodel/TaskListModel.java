@@ -3,7 +3,6 @@ package io.ankor.tutorial.viewmodel;
 import at.irian.ankor.annotation.ActionListener;
 import at.irian.ankor.annotation.ChangeListener;
 import at.irian.ankor.annotation.Param;
-import at.irian.ankor.messaging.AnkorIgnore;
 import at.irian.ankor.pattern.AnkorPatterns;
 import at.irian.ankor.ref.CollectionRef;
 import at.irian.ankor.ref.Ref;
@@ -15,10 +14,8 @@ import java.util.List;
 
 public class TaskListModel {
 
-    @AnkorIgnore
     private final Ref modelRef;
     
-    @AnkorIgnore
     private final TaskRepository taskRepository;
 
     private Boolean footerVisibility = false;
