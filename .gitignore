@@ -19,3 +19,4 @@ overlays/
 .project
 .classpath
 .settings/
+.module-cache
