@@ -20,6 +20,11 @@ def fast_forward(curr_branch, options):
       exit(0)
 
 def main():
+  print "fetching..."
+  ret_code = git_helper.call(['git', 'fetch'])
+  if ret_code != 0:
+      print "Can't fetch"
+      exit(0)
   git_helper.loop(sys.argv[1:], check, fast_forward, print_usage)
 
 if __name__ == "__main__":
