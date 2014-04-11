@@ -16,6 +16,8 @@ import javafx.util.converter.NumberStringConverter;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import static at.irian.ankor.fx.binding.fxref.FxRefs.refFactory;
+
 public class TaskListController implements Initializable {
 
     @FXML
@@ -30,7 +32,7 @@ public class TaskListController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        Ref rootRef = App.refFactory().ref("root");
+        Ref rootRef = refFactory().ref("root");
         FXControllerSupport.init(this, rootRef);
         rootRef.fire(new Action("init"));
     }
