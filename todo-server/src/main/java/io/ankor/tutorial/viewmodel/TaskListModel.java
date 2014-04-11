@@ -3,7 +3,6 @@ package io.ankor.tutorial.viewmodel;
 import at.irian.ankor.annotation.ActionListener;
 import at.irian.ankor.annotation.ChangeListener;
 import at.irian.ankor.annotation.Param;
-import at.irian.ankor.messaging.AnkorIgnore;
 import at.irian.ankor.pattern.AnkorPatterns;
 import at.irian.ankor.ref.CollectionRef;
 import at.irian.ankor.ref.Ref;
@@ -16,10 +15,8 @@ import java.util.List;
 
 public class TaskListModel {
 
-    @AnkorIgnore
     private final Ref modelRef;
-    
-    @AnkorIgnore
+
     private final TaskRepository taskRepository;
 
     private Boolean footerVisibility = false;
@@ -53,7 +50,6 @@ public class TaskListModel {
         Task task = new Task(title);
         taskRepository.saveTask(task);
 
-        int itemsLeft = taskRepository.fetchActiveTasks().size();
         updateItemsCount();
 
         if (!filter.equals(Filter.completed)) {
@@ -71,7 +67,6 @@ public class TaskListModel {
         Task task = tasks.get(index);
         taskRepository.deleteTask(task);
 
-        int itemsLeft = taskRepository.fetchActiveTasks().size();
         updateItemsCount();
 
         tasksRef().delete(index);
@@ -102,7 +97,7 @@ public class TaskListModel {
         modelRef.appendPath("clearButtonVisibility").setValue(itemsComplete != 0);
         modelRef.appendPath("itemsCompleteText").setValue(itemsCompleteText(itemsComplete));
     }
-    
+
     @ChangeListener(pattern = {
             "root.model.itemsLeft",
             "root.model.itemsComplete"})
