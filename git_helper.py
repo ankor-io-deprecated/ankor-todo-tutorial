@@ -71,6 +71,3 @@ def filter_options(arg):
 
 def filter_args(arg):
   return not filter_options(arg)
-
-def extract_options(args):
-  options = filter(filter_option, args)
