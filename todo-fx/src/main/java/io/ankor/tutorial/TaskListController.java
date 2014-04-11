@@ -19,6 +19,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.ResourceBundle;
 
+import static at.irian.ankor.fx.binding.fxref.FxRefs.refFactory;
+
 public class TaskListController implements Initializable {
 
     private FxRef modelRef;
@@ -38,7 +40,7 @@ public class TaskListController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        Ref rootRef = App.refFactory().ref("root");
+        Ref rootRef = refFactory().ref("root");
         FXControllerSupport.init(this, rootRef);
         rootRef.fire(new Action("init"));
     }
