@@ -17,7 +17,7 @@
     <dependencies>
         <dependency>
             <groupId>at.irian.ankor</groupId>
-            <artifactId>ankor-bundle-websocket-server</artifactId>
+            <artifactId>ankor-bundle-server-viewmodel</artifactId>
             <type>pom</type>
         </dependency>
     </dependencies>
