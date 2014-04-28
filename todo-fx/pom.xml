@@ -36,12 +36,6 @@
             <scope>compile</scope>
         </dependency>
 
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <scope>test</scope>
-        </dependency>
-
         <!-- These are required for WebSockets -->
         <!-- https://blogs.oracle.com/arungupta/entry/websocket_java_client_api_in -->
         <dependency>
