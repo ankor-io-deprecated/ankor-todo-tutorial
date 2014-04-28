@@ -26,9 +26,7 @@ The API looks similar on other platforms.
 Anyway, the server will receive JSON in this form:
 
     {
-        "senderId": "...",
         "modelId": "...",
-        "messageId": "...",
         "property": "root.model",
         "action": {
             "name": "newTask",
