@@ -31,8 +31,7 @@
         <dependency>
             <groupId>at.irian.ankor</groupId>
             <artifactId>ankor-bundle-js-client</artifactId>
-            <type>war</type>
-            <scope>runtime</scope>
+            <type>pom</type>
         </dependency>
 
         <dependency>
