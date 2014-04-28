@@ -3,6 +3,7 @@ package io.ankor.tutorial;
 import at.irian.ankor.ref.RefContext;
 
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @author Manfred Geiler
@@ -14,8 +15,13 @@ public class TodoApplication implements at.irian.ankor.application.Application {
     }
 
     @Override
-    public boolean supportsModel(String modelName) {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
+    public boolean isStateless() {
+        return false; //Todo
+    }
+
+    @Override
+    public Set<String> getKnownModelNames() {
+        return null; //Todo
     }
 
     @Override
