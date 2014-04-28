@@ -24,15 +24,13 @@
 
         <dependency>
             <groupId>at.irian.ankor</groupId>
-            <artifactId>ankor-servlet</artifactId>
-            <version>${ankor.version}</version>
-            <scope>compile</scope>
+            <artifactId>ankor-bundle-websocket-server</artifactId>
+            <type>pom</type>
         </dependency>
 
         <dependency>
             <groupId>at.irian.ankor</groupId>
-            <artifactId>ankor-js</artifactId>
-            <version>${ankor.version}</version>
+            <artifactId>ankor-bundle-js-client</artifactId>
             <type>war</type>
             <scope>runtime</scope>
         </dependency>
