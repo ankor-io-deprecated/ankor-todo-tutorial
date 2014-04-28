@@ -43,9 +43,7 @@ It looks similar for other platforms.
 Anyway, what the server receives will look like this:
 
     {
-        "senderId": "...",
         "modelId": "...",
-        "messageId": "...",
         "property": "root.model",
         "action": {
             "name": "newTask",
