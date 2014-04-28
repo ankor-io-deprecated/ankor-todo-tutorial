@@ -5,7 +5,9 @@ import at.irian.ankor.ref.RefContext;
 import io.ankor.tutorial.model.TaskRepository;
 import io.ankor.tutorial.viewmodel.ModelRoot;
 
+import java.util.Collections;
 import java.util.Map;
+import java.util.Set;
 
 public class TodoApplication implements at.irian.ankor.application.Application {
 
@@ -16,9 +18,15 @@ public class TodoApplication implements at.irian.ankor.application.Application {
     }
 
     @Override
-    public boolean supportsModel(String modelName) {
+    public Set<String> getKnownModelNames() {
         // our application supports exactly one model named 'root'
-        return "root".equals(modelName);
+        return Collections.singleton("root");
+    }
+
+    @Override
+    public boolean isStateless() {
+        // This application has stateful server sessions
+        return false;
     }
 
     @Override
