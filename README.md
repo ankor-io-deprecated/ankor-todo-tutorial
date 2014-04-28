@@ -95,9 +95,15 @@ We also provide the creation logic and a factory method for our model:
 
     :::java
     @Override
-    public boolean supportsModel(String modelName) {
+    public Set<String> getKnownModelNames() {
         // our application supports exactly one model named 'root'
-        return "root".equals(modelName);
+        return Collections.singleton("root");
+    }
+
+    @Override
+    public boolean isStateless() {
+        // This application has stateful server sessions
+        return false;
     }
 
     @Override
