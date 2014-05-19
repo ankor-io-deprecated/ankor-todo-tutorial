@@ -19,3 +19,6 @@ overlays/
 .project
 .classpath
 .settings/
+*.module-cache
+*.py
+js-complete
