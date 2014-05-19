@@ -15,7 +15,7 @@ Since a Glassfish instance is running anyway we might as well use it to serve th
 
 #### Purpose of the React pre-compiler
 
-The jsx pre-compiler makes writing React components a more convenient. 
+The jsx pre-compiler makes writing React components more convenient. 
 It will compile components that look like this (note the inline `<div>` tag)
 
     :::js
@@ -37,7 +37,6 @@ into valid JavaScript like this:
     });
     
 The later will be used by React internally to run it's "diff magic" and to update the DOM.
-While React does not prevent you from writing the later directly, it is much more convenient to use the familiar HTML syntax.
     
 #### Starting the React pre-compiler
 
