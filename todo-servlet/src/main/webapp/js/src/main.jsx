@@ -5,8 +5,9 @@ define([
   "ankor/AnkorSystem",
   "ankor/transport/WebSocketTransport",
   "ankor/utils/BaseUtils",
-  "react"
-], function (AnkorSystem, WebSocketTransport, BaseUtils, React) {
+  "react",
+  "build/todoApp"
+], function (AnkorSystem, WebSocketTransport, BaseUtils, React, TodoApp) {
   
   var ankorSystem = new AnkorSystem({
     modelId: "root",
@@ -21,6 +22,9 @@ define([
   rootRef.addTreeChangeListener(render);
 
   function render() {
-    // TODO
+    React.renderComponent(
+      <TodoApp modelRef={rootRef.appendPath("model")} />,
+      document.getElementById('todoapp')
+    );
   }
 });
