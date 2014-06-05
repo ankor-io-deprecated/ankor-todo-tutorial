@@ -4,26 +4,36 @@
 define([
   "react",
   "build/todoFooter",
-  "build/todoItem"
-], function (React, TodoFooter, TodoItem) {
+  "build/todoItem",
+  "build/keys"
+], function (React, TodoFooter, TodoItem, KEYS) {
   return React.createClass({
-    
+
     handleNewTodoKeyDown: function (event) {
-      // TODO
+      if (event.which === KEYS.ENTER_KEY) {
+        var node = this.refs.newField.getDOMNode();
+        var val = node.value.trim();
+        if (val !== '') {
+          this.props.modelRef.fire("newTask", {title: val});
+          node.value = '';
+        }
+      }
     },
-    
+
     toggleAll: function () {
-      // TODO
+      var modelRef = this.props.modelRef;
+      var model = modelRef.getValue();
+      modelRef.fire("toggleAll", {toggleAll: !model.toggleAll});
     },
 
     destroy: function (i) {
-      // TODO
+      this.props.modelRef.fire("deleteTask", {index: i});
     },
 
     clearCompleted: function () {
-      // TODO
+      this.props.modelRef.fire("clearTasks");
     },
-    
+
     render: function () {
       var header, main, footer, todoItems;
 
@@ -49,7 +59,7 @@ define([
           model={model}
           onClearCompleted={this.clearCompleted}
           />;
-        
+
         todoItems = tasks.map(function (todo, i) {
           return (
             <TodoItem
@@ -59,7 +69,7 @@ define([
             onDestroy={this.destroy.bind(this, i)}
             />);
         }, this);
-        
+
         main =
           <section id="main">
             <input
