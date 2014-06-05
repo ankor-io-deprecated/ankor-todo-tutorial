@@ -5,9 +5,27 @@ define([
   "react",
   "build/todoFooter",
   "build/todoItem",
-  "build/keys"
-], function (React, TodoFooter, TodoItem, KEYS) {
+  "build/keys",
+  "director",
+  "build/filter"
+], function (React, TodoFooter, TodoItem, KEYS, Router, FILTER) {
   return React.createClass({
+    
+    componentDidMount: function () {
+      var filterRef = this.props.modelRef.appendPath("filter");
+        
+      var setFilter = function (value) {
+        filterRef.setValue(value);
+      };
+      
+      var router = Router({
+        '/': setFilter.bind(this, FILTER.ALL),
+        '/active': setFilter.bind(this, FILTER.ACTIVE),
+        '/completed': setFilter.bind(this, FILTER.COMPLETED)
+      });
+      
+      router.init('/');
+    },
 
     handleNewTodoKeyDown: function (event) {
       if (event.which === KEYS.ENTER_KEY) {
