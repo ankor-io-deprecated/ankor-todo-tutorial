@@ -1,85 +1,94 @@
-### Basic Setup
+### Components, Dependencies
 
-There is not really a standard way for developing web apps. 
-In order to achieve a common tasks such as modularization we have settled with the following libraries for the purpose of this tutorial.
+In this step we are going to implement the top-level React component `TodoApp`.
+ 
+#### A minimal React component
 
-* For modularization we use [`require.js`][1].
-* As already noted we use [`React`][2] for rendering views.
-* To install the above libraries we have used [`bower`][3]. 
+First we need to create a new file called `todoApp.jsx` in the `src` folder.
+This file will contain the component that describes the overall structure of the web app.
 
-#### Project structure
+We need some boilerplate code:
 
-All the work will be done in the `todo-servlet` module. 
-As you may know from the other tutorials, the servlet module is simply a WebSocket endpoint of the `todo-server` application.
-Since a Glassfish instance is running anyway we might as well use it to serve the static webapp files.
-
-#### Purpose of the React pre-compiler
-
-The jsx pre-compiler makes writing React components more convenient. 
-It will compile components that look like this (note the inline `<div>` tag)
-
-    :::js
-    /** @jsx React.DOM */
-    var HelloMessage = React.createClass({
-      render: function() {
-        return <div>Hello {this.props.name}</div>;
-      }
-    });
-    
-into valid JavaScript like this:
-
-    :::js
-    /** @jsx React.DOM */
-    var HelloMessage = React.createClass({displayName: 'HelloMessage',
-      render: function() {
-        return React.DOM.div(null, "Hello ", this.props.name);
-      }
-    });
-    
-The later will be used by React internally to run it's "diff magic" and to update the DOM.
-    
-#### Starting the React pre-compiler
-
-Inside the `js` folder are two sub folders called `src` and `build`. 
-We will only change `.jsx` files in the `src` folder. 
-These files will then be automatically compiled and placed in the `build` folder.
-
-To start the pre-compiler run `./jsx.sh` in the `js` folder. 
-It will watch for file changes of `.jsx` files in `src`.
-Make sure that you followed the instructions form the previous step so that you have the `react-tools` installed.
-
-#### main.jsx
-
-The prototypical `main.jsx` file should look like this:
-    
     :::js
     /**
      * @jsx React.DOM
      */
     define([
+      "react"
+    ], function (React) {
+        // TODO
+    });
+    
+Next we will create a React component and return it as the requireJS export.
+Inside the callback function:
+
+    :::js
+    return React.createClass({
+      render: function() {
+        return (
+          <div>It works!</div>
+        );
+      }
+    });
+    
+#### Adding a dependency to main.jsx
+    
+Now that we have a React component we can "require" it in `main.jsx`.
+We do so by adding a `"build/todoApp"` to the list of dependencies in `define`. 
+In addition we need a `TodoApp` parameter in the callback function.
+It should look like this:
+
+    define([
       "ankor/AnkorSystem",
       "ankor/transport/WebSocketTransport",
       "ankor/utils/BaseUtils",
-      "react"
-    ], function (AnkorSystem, WebSocketTransport, BaseUtils, React) {
-      // TODO
-    });
-    
-##### Purpose of the comment
-The comment at the top indicated that this file needs to be passed through the React pre-compiler.
-    
-##### Structure of a require.js module
-A require.js module starts with a call to `define` and lists a number of dependencies (without the `.js` at the end).
-When all dependencies are loaded they are passed as arguments to a callback function. 
-This allows the application developer to give names to each of them.
+      "react",
+      "build/todoApp"
+    ], function (AnkorSystem, WebSocketTransport, BaseUtils, React, TodoApp) {
+        
+#### Implementing the render function
 
-In `index.html` you can see this module being loaded:
+The render function will create an instance of our `TodoApp` component and patch it into the DOM.
+React's `renderComponent` method will handle this for us.
+It takes a React component as first parameter and a target DOM node as a second parameter.
+As previously mentioned, any successive call to `renderComponent` will only patch the difference into that DOM node.
 
-    :::js
-    require(["build/main"]);
-    
-As you can see it references the compiled file in the `build` folder, so again make sure the React pre-compiler works properly.
+    function render() {
+      React.renderComponent(
+        <TodoApp modelRef={rootRef.appendPath("model")} />,
+        document.getElementById('todoapp')
+      );
+    };
 
-[1]: http://requirejs.org/
-[2]: http://facebook.github.io/react/
-[3]: http://bower.io/
+You may have noticed the inline XML. Again, the JSX transformer will turn it into valid JavaScript for us.
+
+The other interesting thing here is the `modelRef` attribute of the `TodoApp` tag. 
+Attributes you pass to a React component like this will be available inside the component via `this.props`.
+
+#### Navigating Refs
+
+To understand the `appendPath` method that gets called on `rootRef` we take a look at the overall structure of our view model:
+
+    :::javascript
+    "root": {
+        "model": {
+            "tasks": [],
+            "filter": "all",
+            "itemsLeft": 0,
+            "itemsLeftText": "items left",
+            "footerVisibility": false,
+            "itemsComplete": 0,
+            "itemsCompleteText": "Clear completed (0)",
+            "clearButtonVisibility": false,
+            "toggleAll": true,
+            "filterAllSelected": true,
+            "filterActiveSelected": false,
+            "filterCompletedSelected": false
+        }
+    }
+
+To navigate the tree we can "append" a path to a `Ref`, yielding a new `Ref` to the specified child node.
+We want access to the `model` property and its various key-value pairs, which hold the actual state of the UI.
+`rootRef.appendPath("model")` will do just that.
+
+That's it for this step. In the next step we will implement the `TodoApp` component.
