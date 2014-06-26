@@ -1,85 +1,199 @@
-### Basic Setup
+### TodoItem, TodoFooter
 
-There is not really a standard way for developing web apps. 
-In order to achieve a common tasks such as modularization we have settled with the following libraries for the purpose of this tutorial.
+#### TodoItem
 
-* For modularization we use [`require.js`][1].
-* As already noted we use [`React`][2] for rendering views.
-* To install the above libraries we have used [`bower`][3]. 
-
-#### Project structure
-
-All the work will be done in the `todo-servlet` module. 
-As you may know from the other tutorials, the servlet module is simply a WebSocket endpoint of the `todo-server` application.
-Since a Glassfish instance is running anyway we might as well use it to serve the static webapp files.
-
-#### Purpose of the React pre-compiler
-
-The jsx pre-compiler makes writing React components more convenient. 
-It will compile components that look like this (note the inline `<div>` tag)
+This is the complete render method of the `TodoItem` component in `todoItem.jsx`.
+It should be straight-forward as all the concepts have already been introduced.
 
     :::js
-    /** @jsx React.DOM */
-    var HelloMessage = React.createClass({
-      render: function() {
-        return <div>Hello {this.props.name}</div>;
+    render: function () {
+      var model = this.props.model;
+      
+      var classes = React.addons.classSet({
+        'completed': this.props.model.completed,
+        'editing': this.props.model.editing
+      });
+
+      return (
+        <li className={classes}>
+          <div className="view">
+            <input
+            className = "toggle"
+            type = "checkbox"
+            checked = {model.completed}
+            onChange = {this.onToggle}
+            />
+            <label onDoubleClick={this.setEditing.bind(this, true)}>
+              {model.title}
+            </label>
+            <button
+            className = "destroy"
+            onClick = {this.props.onDestroy}
+            />
+          </div>
+          <input
+          ref = "editField"
+          className = "edit"
+          value = {model.title}
+          onBlur = {this.setEditing.bind(this, false)}
+          onChange = {this.handleChange}
+          onKeyDown = {this.handleKeyDown}
+          />
+        </li>);
+    }
+    
+The only new thing here is the React addon `classSet` which helps with setting style classes on DOM elements.
+The way it works is that the key will be inserted as a class if its value is true.
+
+We are using a few callback methods that need to be implemented:
+    
+##### setEditing
+
+As you can see in the render method, the call parameter gets bound to `true` on a double click and `false` when the input loses the focus.
+`setEditing` should simply set the value to the `editing` property.
+
+    setEditing: function (value) {
+      this.props.modelRef.appendPath("editing").setValue(value);
+    },
+    
+Calling `setValue` on a `Ref` will send a `ChangeEvent` to the server, where it may trigger other events.
+Simply doing something like `tasks[i].editing = value` will not have this effect! 
+    
+##### handleKeyDown
+
+This happens when the user types a key while editing the title of a todo.
+In either case (escape or enter) the `editing` property of the todo should be set to `false`,
+since the user finished editing the task.
+
+    handleKeyDown: function (event) {
+      var ref = this.props.modelRef.appendPath("editing");
+      if (event.which === KEYS.ESCAPE_KEY || event.which === KEYS.ENTER_KEY) {
+        ref.setValue(false);
       }
-    });
+    },
     
-into valid JavaScript like this:
+<div class="alert alert-info">
+    <strong>Note:</strong> Don't forget to import the KEYS object as shown in the previous step.
+</div>
+
+##### handleChange
+
+This happens while the user is editing the title of a todo.
+This sends the current title to the server by triggering a change event via `setValue`.
 
     :::js
-    /** @jsx React.DOM */
-    var HelloMessage = React.createClass({displayName: 'HelloMessage',
-      render: function() {
-        return React.DOM.div(null, "Hello ", this.props.name);
+    handleChange: function (event) {
+      this.props.modelRef.appendPath("title").setValue(event.target.value);
+    },
+    
+##### onToggle
+
+Finally, this happens when the user completes a todo.
+Again this sends the new value to the server by triggering a change event.
+
+    :::js
+    onToggle: function () {
+      var ref = this.props.modelRef.appendPath("completed");
+      ref.setValue(!this.props.model.completed);
+    },
+    
+#### TodoFooter
+
+The `TodoFooter` implementation should be straight-forward as well:
+
+    :::js
+    render: function () {
+      
+      var model = this.props.model;
+
+      var clearButton;
+      if (model.clearButtonVisibility) {
+        clearButton =
+          <button
+          id="clear-completed"
+          onClick={this.props.onClearCompleted}>
+            {model.itemsCompleteText}
+          </button>
       }
-    });
+
+      var cx = React.addons.classSet;
+      var filter = model.filter;
+      var filterAll = cx({selected: filter === FILTER.ALL});
+      var filterActive = cx({selected: filter === FILTER.ACTIVE});
+      var filterCompleted = cx({selected: filter === FILTER.COMPLETED});
+      
+      return (
+        <footer id="footer">
+          <span id="todo-count">
+            <strong>{model.itemsLeft}</strong> {model.itemsLeftText}
+          </span>
+          <ul id="filters">
+            <li>
+              <a href="#/" className={filterAll}>All</a>
+            </li>
+            {' '}
+            <li>
+              <a href="#/active" className={filterActive}>Active</a>
+            </li>
+            {' '}
+            <li>
+              <a href="#/completed" className={filterCompleted}>Completed</a>
+            </li>
+          </ul>
+          {clearButton}
+        </footer>);
+    }
     
-The later will be used by React internally to run it's "diff magic" and to update the DOM.
+A few notes:
+
+* `FILTER` is a object (enum) and needs to be imported like `KEYS` in previous steps
+* `{' '}` is to force white space between the list items
+* `this.props.onClearCompleted` is the method from the parent that we passed to the footer in an earlier step
+
+#### Router
+
+You may have noticed that there are no callbacks on the filter. 
+Hence the value of the `filter` property will never be changed.
+This is because we are still haven't implemented the router, which will react to changes in the URL.
+Clicking the "All", "Active" or "Completed" link will set the URL to `#/`, `#/active`, or `#/completed` respectively.
+
+In our `TodoApp` component we add a method called `componentDidMount`. 
+This method is part of React and will be called after the component has been inserted into DOM.
+
+Inside the method we will call the `Router` function.
+The router will listen for the URLs that we have defined in the footer and set the value of `filter` accordingly.
+
+    :::js
+    componentDidMount: function () {
+      var filterRef = this.props.modelRef.appendPath("filter");
+        
+      var setFilter = function (value) {
+        filterRef.setValue(value);
+      };
+      
+      var router = Router({
+        '/': setFilter.bind(this, FILTER.ALL),
+        '/active': setFilter.bind(this, FILTER.ACTIVE),
+        '/completed': setFilter.bind(this, FILTER.COMPLETED)
+      });
+      
+      router.init('/');
+    },
     
-#### Starting the React pre-compiler
-
-Inside the `js` folder are two sub folders called `src` and `build`. 
-We will only change `.jsx` files in the `src` folder. 
-These files will then be automatically compiled and placed in the `build` folder.
-
-To start the pre-compiler run `./jsx.sh` in the `js` folder. 
-It will watch for file changes of `.jsx` files in `src`.
-Make sure that you followed the instructions form the previous step so that you have the `react-tools` installed.
-
-#### main.jsx
-
-The prototypical `main.jsx` file should look like this:
+Note that we depend on `Router` and `FILTER` in order for this to work:
     
     :::js
-    /**
-     * @jsx React.DOM
-     */
     define([
-      "ankor/AnkorSystem",
-      "ankor/transport/WebSocketTransport",
-      "ankor/utils/BaseUtils",
-      "react"
-    ], function (AnkorSystem, WebSocketTransport, BaseUtils, React) {
-      // TODO
-    });
+      ...,
+      "director",
+      "build/filter"
+    ], function (..., Router, FILTER) {
     
-##### Purpose of the comment
-The comment at the top indicated that this file needs to be passed through the React pre-compiler.
-    
-##### Structure of a require.js module
-A require.js module starts with a call to `define` and lists a number of dependencies (without the `.js` at the end).
-When all dependencies are loaded they are passed as arguments to a callback function. 
-This allows the application developer to give names to each of them.
+Congratulations! You have implemented the core functionality of our todo application.
+This completes the HTML5 tutorial.
 
-In `index.html` you can see this module being loaded:
+If you haven't done so yet, check out the corresponding [server tutorial][servertutorial].
+Or you can learn how to build this application on [another platform][tutorials].
 
-    :::js
-    require(["build/main"]);
-    
-As you can see it references the compiled file in the `build` folder, so again make sure the React pre-compiler works properly.
-
-[1]: http://requirejs.org/
-[2]: http://facebook.github.io/react/
-[3]: http://bower.io/
+[servertutorial]: http://www.ankor.io/tutorials/server
+[tutorials]: http://www.ankor.io/tutorials
