@@ -1,85 +1,199 @@
-### Basic Setup
+### The TodoApp component
 
-There is not really a standard way for developing web apps. 
-In order to achieve a common tasks such as modularization we have settled with the following libraries for the purpose of this tutorial.
+In this step we will learn how to access values form a `Ref`.
+We will then use them to implement the render method of our `TodoApp` component.
 
-* For modularization we use [`require.js`][1].
-* As already noted we use [`React`][2] for rendering views.
-* To install the above libraries we have used [`bower`][3]. 
+#### TodoApp render
 
-#### Project structure
+If you take a look the TodoMVC user interface you will notice that it can be split into three separate parts:
 
-All the work will be done in the `todo-servlet` module. 
-As you may know from the other tutorials, the servlet module is simply a WebSocket endpoint of the `todo-server` application.
-Since a Glassfish instance is running anyway we might as well use it to serve the static webapp files.
+* A *header* containing the input field for new tasks
+* A *main* section that contains a list of *todoItems*
+* A *footer* with to select a filter and some meta information
 
-#### Purpose of the React pre-compiler
+So we want the render function in `todoApp.jsx` look like this:
+    
+    :::js
+    render: function () {
+      var header, main, footer, todoItems;
+      
+      // TODO
+      
+      return (
+        <div>
+          {header}
+          {main}
+          {footer}
+        </div>
+        );
+    }
+    
+#### Header
 
-The jsx pre-compiler makes writing React components more convenient. 
-It will compile components that look like this (note the inline `<div>` tag)
+Let's implement the header first, as it is not dependent on any view model properties:
 
     :::js
-    /** @jsx React.DOM */
-    var HelloMessage = React.createClass({
-      render: function() {
-        return <div>Hello {this.props.name}</div>;
-      }
-    });
-    
-into valid JavaScript like this:
+    header =
+      <header id="header">
+        <h1>todos</h1>
+        <input
+        ref="newField"
+        id="new-todo"
+        placeholder="What needs to be done?"
+        autoFocus={true}
+        onKeyDown={this.handleNewTodoKeyDown}
+        />
+      </header>;
+      
+Setting attributes like `onKeyDown` is React's way of listening for events. 
+Note that the `handleNewTodoKeyDown` method is currently not defined. 
+Let's add it to our component:
 
     :::js
-    /** @jsx React.DOM */
-    var HelloMessage = React.createClass({displayName: 'HelloMessage',
+    return React.createClass({
+      handleNewTodoKeyDown: function (event) {
+        // TODO
+      },
+    
       render: function() {
-        return React.DOM.div(null, "Hello ", this.props.name);
-      }
-    });
+        ...
+        
+We will leave it empty for now and implement it in the next step.
+        
+#### Getting the values
+
+Before we go on we need to access the values of our view model.
+As we already know we can access the model ref via `this.props`.
+By invoking `getValue` on the ref we get the underlying property. 
+In our case it's a simple object containing the state of our application as detailed in the previous step.
     
-The later will be used by React internally to run it's "diff magic" and to update the DOM.
+    :::js
+    var model = this.props.modelRef.getValue();
+    var tasks = model.tasks;
+    var tasksRef = this.props.modelRef.appendPath("tasks");
     
-#### Starting the React pre-compiler
+If you look at the behaviour of the TodoMVC application you will notice that the *main* section and the *footer* are only visible when there are todos in the list.
+There is already a property in your view model that captures this behaviour.
+We can now access it via the `model` object:
 
-Inside the `js` folder are two sub folders called `src` and `build`. 
-We will only change `.jsx` files in the `src` folder. 
-These files will then be automatically compiled and placed in the `build` folder.
-
-To start the pre-compiler run `./jsx.sh` in the `js` folder. 
-It will watch for file changes of `.jsx` files in `src`.
-Make sure that you followed the instructions form the previous step so that you have the `react-tools` installed.
-
-#### main.jsx
-
-The prototypical `main.jsx` file should look like this:
+    :::js
+    if (model.footerVisibility === true) {
+      // footer = ...
+      // todoItems = ...
+      // main = ...
+    }
+   
+#### Main section
     
+Next we will define the main section:
+    
+    :::js
+    main =
+      <section id="main">
+        <input
+        id="toggle-all"
+        type="checkbox"
+        checked={model.toggleAll}
+        onChange={this.toggleAll}
+        />
+        <ul id="todo-list">
+          {todoItems}
+        </ul>
+      </section>;
+    
+Again we need to define the callback method for the `onChange` event which we will leave empty for now:
+
+    :::js
+    toggleAll: function () {
+      // TODO
+    },
+    
+#### Footer
+
+The footer and the todo items will be encapsulated in their own components. 
+As with the the `TodoApp` component we need to create new files: `todoFooter.jsx` and `todoItem.jsx`.
+The outline of them should look like this:
+
     :::js
     /**
      * @jsx React.DOM
      */
     define([
-      "ankor/AnkorSystem",
-      "ankor/transport/WebSocketTransport",
-      "ankor/utils/BaseUtils",
       "react"
-    ], function (AnkorSystem, WebSocketTransport, BaseUtils, React) {
-      // TODO
+    ], function (React) {
+      return React.createClass({
+        render: function () {
+          return <div/>;
+        }
+      });
     });
     
-##### Purpose of the comment
-The comment at the top indicated that this file needs to be passed through the React pre-compiler.
-    
-##### Structure of a require.js module
-A require.js module starts with a call to `define` and lists a number of dependencies (without the `.js` at the end).
-When all dependencies are loaded they are passed as arguments to a callback function. 
-This allows the application developer to give names to each of them.
-
-In `index.html` you can see this module being loaded:
+Since we have defined minimal `TodoFooter` and `TodoItem` components, we can now "import" them in our `TodoApp`.
+We do so by adding `"build/todoApp"` and `"build/todoItem"` to the array as well as `TodoFooter` and `TodoItem` to the callback parameters:
 
     :::js
-    require(["build/main"]);
-    
-As you can see it references the compiled file in the `build` folder, so again make sure the React pre-compiler works properly.
+    define([
+      "react",
+      "build/todoFooter"
+      "build/todoItem"
+    ], function (React, TodoFooter, TodoItem) {
+   
+Now that we have the `TodoFooter` component in scope, we can assign a new instance to the footer variable:
 
-[1]: http://requirejs.org/
-[2]: http://facebook.github.io/react/
-[3]: http://bower.io/
+    :::js
+    footer =
+      <TodoFooter
+      model={model}
+      onClearCompleted={this.clearCompleted}
+      />;
+      
+We set our model and a `onClearCompleted` callback as attributes.
+Don't forget to define an empty `clearCompleted` method.
+
+#### Todo Items
+
+For the todo items we need to map over the array of tasks and a return a `TodoItem` component for each entry.
+
+    :::js
+    todoItems = tasks.map(function (todo, i) {
+      return (
+        <TodoItem
+        key={todo.id}
+        modelRef={tasksRef.appendIndex(i)}
+        model={todo}
+        onDestroy={this.destroy.bind(this, i)}
+        />);
+    }, this);
+    
+A `TodoItem` has four attributes:
+    
+* A unique `key` attribute should be present on components that are stored in an array.
+
+* The `modelRef` attribute should be a `Ref` to the current task in the list. 
+To get that ref we use a special method for references to collections.
+The `appendIndex` method is a bit like `appendPath`.
+It does the same as constructing a path like `model.tasks[i]`, where `model.tasks` is our `tasksRef` and `i` is the number that get passed to `appendIndex`.
+
+* The `model` contains the state of a single todo item.
+
+* The `onDestroy` callback is another method in `TodoApp` that we need to implement.
+Note that we call `bind` on it. 
+`bind` returns a new function.
+The first parameter of `bind` sets what `this` will be inside the new function.
+All following parameters will be prepended to its argument list.
+This has the effect that each `TodoItem` gets its own `destroy` function, that will always be invoked with the correct index as its first parameter.
+Alternatively we could set the current index as an attribute and pass it to `onDestroy` ourselves when we invoke it.
+
+For completeness here are the outlines of the two callback functions. 
+Note the `i` parameter of `destroy` that we just bound in the map callback.
+
+    :::js
+    destroy: function (i) {
+      // TODO
+    },
+
+    clearCompleted: function () {
+      // TODO
+    },
+    
+In the next step we will implement the four empty callback methods that we have created in this step.
