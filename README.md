@@ -1,85 +1,94 @@
-### Basic Setup
+### Firing action events
 
-There is not really a standard way for developing web apps. 
-In order to achieve a common tasks such as modularization we have settled with the following libraries for the purpose of this tutorial.
+In this step we will implement the four methods that we left empty in the last step.
+Here the beauty of React and Ankor will really shine, as all those methods will be surprisingly short.
+We will also get to know the Ankor concept of `Action`s.
 
-* For modularization we use [`require.js`][1].
-* As already noted we use [`React`][2] for rendering views.
-* To install the above libraries we have used [`bower`][3]. 
+#### Clear completed Todos
 
-#### Project structure
+Let's start with `clearCompleted` as it is the simplest of them:
+ 
+    :::js
+    clearCompleted: function () {
+      this.props.modelRef.fire("clearTasks");
+    },
+    
+`clearTasks` is the name of the event handler as defined [on the server][servertutorial].
 
-All the work will be done in the `todo-servlet` module. 
-As you may know from the other tutorials, the servlet module is simply a WebSocket endpoint of the `todo-server` application.
-Since a Glassfish instance is running anyway we might as well use it to serve the static webapp files.
+Let's take a look at the `fire` method.
+Effectively it fires a [`ActionEvent`][actionevent] that gets sent to the server by the Ankor system.
+It will be processed there and `ChangeEvent`s will get sent back if the state on the server changes.
 
-#### Purpose of the React pre-compiler
+As we've seen in a previous step there is a `TreeChangeListener` registered at the root model.
+This means that for any change event that comes back, the top-level render method will be called. 
+React will find the difference to what's currently in the DOM and patch it into the DOM using a minimal set of API calls.
+Since this process is fast we can run it for every change.
 
-The jsx pre-compiler makes writing React components more convenient. 
-It will compile components that look like this (note the inline `<div>` tag)
+#### Removing a Todo
+
+Next the `destroy` method:
 
     :::js
-    /** @jsx React.DOM */
-    var HelloMessage = React.createClass({
-      render: function() {
-        return <div>Hello {this.props.name}</div>;
-      }
-    });
+    destroy: function (i) {
+      this.props.modelRef.fire("deleteTask", {index: i});
+    },
     
-into valid JavaScript like this:
+It looks pretty much the same, except that the event handler on the server takes a parameter. 
+Parameters get passed to `fire` as a simple JavaScript object.
+Note that the name `index` is determined by the server implementation.
+
+#### Toggling all Todos 
+
+The `toggleAll` method is firing an action event with params as well.
+The difference is that we need to access the current state of the `toggleAll` property on the model.
 
     :::js
-    /** @jsx React.DOM */
-    var HelloMessage = React.createClass({displayName: 'HelloMessage',
-      render: function() {
-        return React.DOM.div(null, "Hello ", this.props.name);
-      }
-    });
+    toggleAll: function () {
+      var modelRef = this.props.modelRef;
+      var model = modelRef.getValue();
+      modelRef.fire("toggleAll", {toggleAll: !model.toggleAll});
+    },
     
-The later will be used by React internally to run it's "diff magic" and to update the DOM.
+#### Adding a new Todo
+
+Adding a todo requires a bit more code.
     
-#### Starting the React pre-compiler
+First of all we need to import the `KEYS` object. 
+It is already part of the repo.
+It's just a enum-like object for the enter and escape key codes. 
+The call to `define` should now look like
 
-Inside the `js` folder are two sub folders called `src` and `build`. 
-We will only change `.jsx` files in the `src` folder. 
-These files will then be automatically compiled and placed in the `build` folder.
-
-To start the pre-compiler run `./jsx.sh` in the `js` folder. 
-It will watch for file changes of `.jsx` files in `src`.
-Make sure that you followed the instructions form the previous step so that you have the `react-tools` installed.
-
-#### main.jsx
-
-The prototypical `main.jsx` file should look like this:
-    
     :::js
-    /**
-     * @jsx React.DOM
-     */
     define([
-      "ankor/AnkorSystem",
-      "ankor/transport/WebSocketTransport",
-      "ankor/utils/BaseUtils",
-      "react"
-    ], function (AnkorSystem, WebSocketTransport, BaseUtils, React) {
-      // TODO
-    });
+      "react",
+      "build/todoFooter",
+      "build/todoItem",
+      "build/keys"
+    ], function (React, TodoFooter, TodoItem, KEYS) {
     
-##### Purpose of the comment
-The comment at the top indicated that this file needs to be passed through the React pre-compiler.
+and the implementation of `handleNewTodoKeyDown` should look like this
     
-##### Structure of a require.js module
-A require.js module starts with a call to `define` and lists a number of dependencies (without the `.js` at the end).
-When all dependencies are loaded they are passed as arguments to a callback function. 
-This allows the application developer to give names to each of them.
-
-In `index.html` you can see this module being loaded:
-
-    :::js
-    require(["build/main"]);
+    handleNewTodoKeyDown: function (event) {
+      if (event.which === KEYS.ENTER_KEY) {
+        var node = this.refs.newField.getDOMNode();
+        var val = node.value.trim();
+        if (val !== '') {
+          this.props.modelRef.fire("newTask", {title: val});
+          node.value = '';
+        }
+      }
+    },
     
-As you can see it references the compiled file in the `build` folder, so again make sure the React pre-compiler works properly.
+What may be confusing is the `this.refs.newField` part. 
+This belongs to React and has nothing to do with the concept of Ankor `Ref`s. 
+It is React's way of getting access to DOM elements. 
+By setting a `ref` attribute on a component it will be present in the `refs` object.
+In the case of the input field it looked like `<input ref="newField" ... />`.
 
-[1]: http://requirejs.org/
-[2]: http://facebook.github.io/react/
-[3]: http://bower.io/
+The rest is hopefully self-explanatory or already known. 
+Note that it is safe to use `e.which` because React implements it's own event system, where a `which` property is always present.
+
+This completes step 5. In the next step we will implement the `TodoItem` and `TodoFooter` components which complete the app.
+
+[actionevent]: https://github.com/ankor-io/ankor-framework/blob/ankor-0.2/ankor-js/src/main/webapp/js/ankor/events/ActionEvent.js
+[servertutorial]: http://ankor.io/tutorials/server
