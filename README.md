@@ -1,85 +1,65 @@
-### Basic Setup
-
-There is not really a standard way for developing web apps. 
-In order to achieve a common tasks such as modularization we have settled with the following libraries for the purpose of this tutorial.
-
-* For modularization we use [`require.js`][1].
-* As already noted we use [`React`][2] for rendering views.
-* To install the above libraries we have used [`bower`][3]. 
-
-#### Project structure
-
-All the work will be done in the `todo-servlet` module. 
-As you may know from the other tutorials, the servlet module is simply a WebSocket endpoint of the `todo-server` application.
-Since a Glassfish instance is running anyway we might as well use it to serve the static webapp files.
-
-#### Purpose of the React pre-compiler
-
-The jsx pre-compiler makes writing React components more convenient. 
-It will compile components that look like this (note the inline `<div>` tag)
+### Starting a AnkorSystem
+ 
+The first thing we'd like to do in our `main.jsx` is to create an `AnkorSystem`. 
+We've already defined the dependencies for the constructor in the previous step.
+Inside the `define` callback we put:
 
     :::js
-    /** @jsx React.DOM */
-    var HelloMessage = React.createClass({
-      render: function() {
-        return <div>Hello {this.props.name}</div>;
-      }
+    var ankorSystem = new AnkorSystem({
+      modelId: "root",
+      transport: new WebSocketTransport("/websocket/ankor", {
+        "connectProperty": "root"
+      }),
+      utils: new BaseUtils()
     });
     
-into valid JavaScript like this:
+The `AnkorSystem` needs a transport object to handle sending and receiving of messages.
+In this case it is a `WebSocketTransport`, which is currently the only one available in the browser.
 
-    :::js
-    /** @jsx React.DOM */
-    var HelloMessage = React.createClass({displayName: 'HelloMessage',
-      render: function() {
-        return React.DOM.div(null, "Hello ", this.props.name);
-      }
-    });
-    
-The later will be used by React internally to run it's "diff magic" and to update the DOM.
-    
-#### Starting the React pre-compiler
+Remember that Ankor is fully reactive. 
+This means that events from the server are sent to the client as they occur.
+Consequently there needs to be a push mechanism to the browser.
 
-Inside the `js` folder are two sub folders called `src` and `build`. 
-We will only change `.jsx` files in the `src` folder. 
-These files will then be automatically compiled and placed in the `build` folder.
+The `BaseUtils` are just a collection of utility functions.
+You can provide your own implementation if you'd like.
 
-To start the pre-compiler run `./jsx.sh` in the `js` folder. 
-It will watch for file changes of `.jsx` files in `src`.
-Make sure that you followed the instructions form the previous step so that you have the `react-tools` installed.
+The value of `modelId` and `connectProperty` are both `"root"`, which is the name of the view model at the top of the hierarchy.
+See the [server tutorial][servertutorial] for more information.
 
-#### main.jsx
+#### Getting the root ref
 
-The prototypical `main.jsx` file should look like this:
+Next we need a `Ref` to our root model:
     
     :::js
-    /**
-     * @jsx React.DOM
-     */
-    define([
-      "ankor/AnkorSystem",
-      "ankor/transport/WebSocketTransport",
-      "ankor/utils/BaseUtils",
-      "react"
-    ], function (AnkorSystem, WebSocketTransport, BaseUtils, React) {
-      // TODO
-    });
+    var rootRef = ankorSystem.getRef("root");
     
-##### Purpose of the comment
-The comment at the top indicated that this file needs to be passed through the React pre-compiler.
-    
-##### Structure of a require.js module
-A require.js module starts with a call to `define` and lists a number of dependencies (without the `.js` at the end).
-When all dependencies are loaded they are passed as arguments to a callback function. 
-This allows the application developer to give names to each of them.
+##### References
 
-In `index.html` you can see this module being loaded:
+A core concept of Ankor is the [`Ref`][ref]. It represents a reference to a view model.
+Since we are writing a client application it's a remote reference to a view model on the server.
+All view model properties are ordered in a hierarchical tree structure.
+The Ref object allows us to navigate this tree and manipulate the underlying properties.
+By requesting the reference that lies at the `root` of the tree we get access to the complete view model.
+
+#### Rendering the app
+
+Now we take full advantage of React's philosophy of re-rendering the entire app.
+We simply render the app every time the state changes.
+React makes this possible by constructing a "virtual DOM" and only patching the difference into the actual DOM.
+
+So what we need is a `render` function that gets called every time a change happens in any of the view models.
+We achieve this by using the `addTreeChangeListener` method on the root ref.
+We pass a yet-to-be-defined render function as a parameter:
 
     :::js
-    require(["build/main"]);
+    rootRef.addTreeChangeListener(render);
     
-As you can see it references the compiled file in the `build` folder, so again make sure the React pre-compiler works properly.
+    function render() {
+        // TODO
+    }
+    
+In the next step we will implement the render function.
+In order to do so we will have to learn a little bit more about React though. 
 
-[1]: http://requirejs.org/
-[2]: http://facebook.github.io/react/
-[3]: http://bower.io/
+[servertutorial]: http://ankor.io/tutorials/server
+[ref]: https://github.com/ankor-io/ankor-framework/blob/ankor-0.2/ankor-js/src/main/webapp/js/ankor/Ref.js
