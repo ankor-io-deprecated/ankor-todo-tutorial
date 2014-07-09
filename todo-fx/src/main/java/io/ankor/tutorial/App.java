@@ -9,21 +9,18 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
 public class App extends Application {
+    private AnkorClient client;
 
     public static void main(String[] args) {
         launch(args);
     }
 
-    private AnkorClient client;
-
     public App() throws Exception {
         client = WebSocketFxClient.builder()
-                                  .withApplicationName("Todo FX Client")
-                                  .withModelName("root")
-                                  .withConnectParam("todoListId", "collaborationTest")
-                                  .withServer("ws://localhost:8080/websocket/ankor")
-//                                  .withServer("wss://ankor-todo-sample.irian.at/websocket/ankor")
-                                  .build();
+                .withApplicationName("Todo FX Client")
+                .withModelName("root")
+                .withServer("ws://localhost:8080/websocket/ankor")
+                .build();
     }
 
     @Override
