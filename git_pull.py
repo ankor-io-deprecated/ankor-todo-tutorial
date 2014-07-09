@@ -6,7 +6,7 @@ import git_helper
 def print_usage(): 
   print 'Pulls multiple branches.'
   print ''
-  print 'Example: python -d ' + sys.argv[0] + ' fx 0 7 server 0 8 ios 0 4 --include-complete'
+  print 'Example: python -d ' + sys.argv[0] + ' fx 0 7 server 0 8 ios 0 4 js 0 6 --include-complete'
   print ''
   print 'If you are comfortable with what the script is doing, remove the -d flag.'
 
