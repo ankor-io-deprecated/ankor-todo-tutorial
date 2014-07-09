@@ -16,7 +16,7 @@ import java.util.List;
 public class TaskListModel {
 
     private final Ref modelRef;
-
+    
     private final TaskRepository taskRepository;
 
     private Boolean footerVisibility = false;
@@ -97,7 +97,7 @@ public class TaskListModel {
         modelRef.appendPath("clearButtonVisibility").setValue(itemsComplete != 0);
         modelRef.appendPath("itemsCompleteText").setValue(itemsCompleteText(itemsComplete));
     }
-
+    
     @ChangeListener(pattern = {
             "root.model.itemsLeft",
             "root.model.itemsComplete"})
