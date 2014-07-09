@@ -19,8 +19,7 @@ public class App extends Application {
         client = WebSocketFxClient.builder()
                 .withApplicationName("Todo FX Client")
                 .withModelName("root")
-                .withConnectParam("todoListId", "collaborationTest")
-                .withServer("wss://ankor-todo-sample.irian.at/websocket/ankor")
+                .withServer("ws://localhost:8080/websocket/ankor")
                 .build();
     }
 
