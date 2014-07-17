@@ -46,4 +46,13 @@
         </plugins>
     </build>
 
+    <repositories>
+        <repository>
+            <id>ankor-release</id>
+            <url>http://repo.irian.at/content/repositories/ankor-release/</url>
+            <releases><enabled>true</enabled></releases>
+            <snapshots><enabled>false</enabled></snapshots>
+        </repository>
+    </repositories>
+
 </project>
