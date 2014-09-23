@@ -14,10 +14,12 @@
         <module>todo-fx</module>
         <module>todo-server</module>
         <module>todo-servlet</module>
+        <module>todo-js-client</module>
     </modules>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <ankor.version>0.4-SNAPSHOT</ankor.version>
     </properties>
 
     <dependencyManagement>
@@ -25,7 +27,7 @@
             <dependency>
                 <groupId>at.irian.ankor</groupId>
                 <artifactId>ankor-bom</artifactId>
-                <version>0.3-SNAPSHOT</version>
+                <version>${ankor.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
