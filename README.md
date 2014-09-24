@@ -4,15 +4,25 @@ In order to see the results of our work we need to connect a client to our Ankor
 The clients will connect to the server via [WebSocket][2]. 
 
 Before we can start the server we need to fetch all the dependencies. 
-In the root directory execute the maven goal `install`:
+In the root directory execute the maven goal `package`:
 
-    mvn install
+    mvn package
 
-To start the web server `cd` into the `todo-servlet` directory and execute this Maven goal:
+To start the web server you have several possibilities. 
+You can either execute the maven goal inside the `todo-servlet` directory:
 
+    cd todo-servlet
     mvn spring-boot:run
     
-After the process completes point your browser to [`http://localhost:8080/test.html`](http://localhost:8080/test.html).
+or start the generated the `jar` file directly
+
+    cd todo-servlet/target
+    java -jar todo-servlet-0-SNAPSHOT.jar
+    
+or you tell your IDE to run the main method in `ServerStarter.java`, 
+which might be the best option for debugging.
+    
+After you have started the server, point your browser to [`http://localhost:8080/test.html`](http://localhost:8080/test.html).
 The page should look something like this:
 
     :::text
