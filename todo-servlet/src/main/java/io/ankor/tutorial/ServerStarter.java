@@ -1,3 +1,5 @@
+package io.ankor.tutorial;
+
 import at.irian.ankor.application.Application;
 import at.irian.ankor.application.GenericApplication;
 import at.irian.ankor.system.WebSocketSpringBootServer;
