@@ -7,9 +7,9 @@ import io.ankor.tutorial.model.TaskRepository;
 public class ModelRoot {
     private TaskListModel model;
 
-    public ModelRoot(Ref rootRef, TaskRepository taskRepository) {
+    public ModelRoot(Ref rootRef) {
         AnkorPatterns.initViewModel(this, rootRef);
-        this.model = new TaskListModel(rootRef.appendPath("model"), taskRepository);
+        this.model = new TaskListModel(rootRef.appendPath("model"), new TaskRepository());
     }
 
     public TaskListModel getModel() {
