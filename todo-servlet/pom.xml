@@ -11,78 +11,98 @@
     </parent>
 
     <artifactId>todo-servlet</artifactId>
-    <packaging>war</packaging>
-    <name>Todo Sample - Servlet</name>
+    <name>Todo Sample - Sprint Boot WebSocket Server</name>
+    <packaging>jar</packaging>
 
     <dependencies>
+        <dependency>
+            <groupId>at.irian.ankor</groupId>
+            <artifactId>ankor-bundle-websocket-springboot-server</artifactId>
+            <type>pom</type>
+        </dependency>
+
         <dependency>
             <groupId>io.ankor.tutorial</groupId>
             <artifactId>todo-server</artifactId>
             <version>${project.version}</version>
             <scope>compile</scope>
         </dependency>
-
-        <dependency>
-            <groupId>at.irian.ankor</groupId>
-            <artifactId>ankor-bundle-websocket-server</artifactId>
-            <type>pom</type>
-        </dependency>
-
-        <dependency>
-            <groupId>at.irian.ankor</groupId>
-            <artifactId>ankor-bundle-js-client</artifactId>
-            <type>pom</type>
-        </dependency>
-
-        <dependency>
-            <groupId>javax.websocket</groupId>
-            <artifactId>javax.websocket-api</artifactId>
-            <version>1.0</version>
-            <scope>provided</scope>
-        </dependency>
     </dependencies>
+    
+    <properties>
+        <start-class>io.ankor.tutorial.ServerStarter</start-class>
+    </properties>
 
     <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+            </resource>
+            <resource>
+                <!--
+                Define additional resources folder for inherited static web resources from:
+                    ankor-js          ... Basic Ankor JavaScript support
+                    hello-js-client   ... JavaScript client resources
+                These resources are getting including by means of the maven-dependency-plugin (see below)
+                -->
+                <directory>${project.build.directory}/inherited-resources</directory>
+            </resource>
+        </resources>
+
         <plugins>
             <plugin>
-                <groupId>org.glassfish.embedded</groupId>
-                <artifactId>maven-embedded-glassfish-plugin</artifactId>
-                <version>4.0</version>
-                <configuration>
-                    <ports>
-                        <http-listener>8080</http-listener>
-                    </ports>
-                    <commands>
-                        <command>list-jms-resources</command>
-                    </commands>
-                </configuration>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>1.1.5.RELEASE</version>
                 <executions>
                     <execution>
                         <goals>
-                            <goal>admin</goal>
-                        </goals>
-                        <configuration>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>run</id>
-                        <goals>
-                            <goal>run</goal>
+                            <goal>repackage</goal>
                         </goals>
                     </execution>
+                </executions>
+            </plugin>
+
+            <!-- 
+            This will copy the static files form ankor-js and hello-js-client into the inherited-resources/static folder.
+            -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
                     <execution>
-                        <id>deploy</id>
+                        <id>unpack</id>
+                        <phase>generate-resources</phase>
                         <goals>
-                            <goal>deploy</goal>
+                            <goal>unpack</goal>
                         </goals>
                         <configuration>
-                            <app>target/${project.artifactId}-${project.version}</app>
-                            <contextRoot>/</contextRoot>
+                            <artifactItems>
+                                <artifactItem>
+                                    <!-- copy Ankor Javascript Support resources -->
+                                    <groupId>at.irian.ankor</groupId>
+                                    <artifactId>ankor-js</artifactId>
+                                    <type>war</type>
+                                    <outputDirectory>${project.build.directory}/inherited-resources/static</outputDirectory>
+                                    <excludes>WEB-INF/**,META-INF/**</excludes>
+                                </artifactItem>
+                                <artifactItem>
+                                    <!-- copy Javascript Client resources -->
+                                    <groupId>io.ankor.tutorial</groupId>
+                                    <artifactId>todo-js-client</artifactId>
+                                    <version>${project.version}</version>
+                                    <type>war</type>
+                                    <outputDirectory>${project.build.directory}/inherited-resources/static</outputDirectory>
+                                    <excludes>WEB-INF/**,META-INF/**</excludes>
+                                </artifactItem>
+                            </artifactItems>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
         </plugins>
-    </build>
 
+    </build>
 </project>
+
+
