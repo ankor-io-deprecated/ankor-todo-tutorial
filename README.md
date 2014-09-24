@@ -75,6 +75,6 @@ Now you got a maven project based on these modules:
 
 The `todo-server` project contains the view model and its associated behaviour.
 The `todo-servlet` project will start a server and expose the view model to clients via WebSocket.
-The `todo-js-client` the module we'll be working on.
-The `todo-fx` contains a JavaFX client to test your setup.
+The `todo-js-client` project contains a JavaScript client to test your setup.
+The `todo-fx` project is the module we'll be working on.
 
