@@ -65,8 +65,8 @@ Now you got a maven project based on these modules:
 
 The `todo-server` project contains the view model and its associated behaviour.
 The `todo-servlet` project will start a server and expose the view model to clients via WebSocket.
-The `todo-js-client` contains a browser client to test your setup.
-The `todo-fx` contains a JavaFX client to test your setup.
+The `todo-js-client` project contains a browser client to test your setup.
+The `todo-fx` project contains a JavaFX client to test your setup.
 
 [jsr356]: http://www.oracle.com/technetwork/articles/java/jsr356-1937161.html
 [springboot]: http://projects.spring.io/spring-boot/
