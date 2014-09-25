@@ -18,7 +18,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <ankor.version>0.4-SNAPSHOT</ankor.version>
+        <ankor.version>0.4</ankor.version>
     </properties>
 
     <dependencyManagement>
